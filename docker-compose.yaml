@@ -20,11 +20,23 @@ services:
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_DB_USER:  root
+      WORDPRESS_DB_USER: root
       WORDPRESS_DB_PASSWORD: $DB_PASSWORD
+      WORDPRESS_CONFIG_EXTRA: $WORDPRESS_CONFIG_EXTRA # Injects extra configurations for wordpress.
     depends_on:
-       - db
+      - db
+
+  tunnel:
+    container_name: cloudflared
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command:
+      - tunnel
+      - --no-autoupdate
+      - run
+      - --token
+      - $CF_TOKEN
 
 volumes:
-    db_data:
-    wp_data:
+  db_data:
+  wp_data:
